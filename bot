@@ -1,0 +1,54 @@
+import discord
+from discord.ext import commands
+import random
+import Py_class
+
+intents = discord.Intents.default()
+intents.message_content = True
+
+client = commands.Bot(command_prefix='/', intents=intents)
+
+@client.event
+async def on_ready():
+    print(f'Giriş yaptı:  {client.user}')
+
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+
+    if message.content.startswith(client.command_prefix):
+        await client.process_commands(message)
+    else:
+        await message.channel.send(message.content)
+
+@client.command()
+async def about(ctx):
+    await ctx.send('Bu discord.py kütüphanesi ile oluşturulmuş echo-bot!')
+    await ctx.send("/add komutu ile iki sayıyı toplayabilir.")
+    await ctx.send("/choose komutu ile rastgele iki seçenek arasından seçim yapar.")
+    await ctx.send("/repeat komutu ile kullanıcı girdisini belli sayılarda tekrarlar.")
+    await ctx.send("/joined komutu ile kullanıcının giriş tarihini gösterir.")
+
+@client.command()
+async def add(ctx,sayi1 = 0, sayi2 = 0):
+    await ctx.send(sayi1+sayi2)
+
+@client.command()
+async def choose(ctx,x = "A",y = "B"):
+    await ctx.send(random.choice([x,y]))
+
+@client.command()
+async def repeat(ctx,a="",b=1):
+    await ctx.send(a*b)      
+
+@client.command()
+async def joined(ctx, member: discord.Member):
+      joined_at = member.joined_at.strftime("%b %d, %Y, %T")
+      await ctx.send(f" {member.mention} Joined at {joined_at}")
+
+@client.command()
+async def imparatorluk(ctx):
+    await ctx.send(Py_class.imp.baslangic())
+
+client.run("")
